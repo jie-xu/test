@@ -8,5 +8,11 @@
     <artifactId>common</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <parent>
+        <groupId>com.xgh</groupId>
+        <artifactId>xgh</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
 </project>
