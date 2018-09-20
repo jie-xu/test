@@ -7,18 +7,19 @@ import com.xgh.domain.vo.AmtTypeVO;
 import com.xgh.service.ConsumeService;
 import com.xgh.service.DepositService;
 import com.xgh.service.MemberService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class WalletController {
         return Response.successResponse(result);
     }
 
+
     /**
      * 新建充值记录
      */
@@ -63,6 +65,10 @@ public class WalletController {
     public Response newdeposit(@RequestBody Map<String,Object> params){
         try {
             String userId = params.get("userId").toString();
+            List types = ((List)params.get("amtType"));
+            if(CollectionUtils.isEmpty(types) || types.size() > 1){
+                return Response.fail("请选择一项充值的额度！");
+            }
             String amtType = ((List)params.get("amtType")).get(0).toString();
             if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(amtType)){
                 return Response.fail("参数不合法！");
@@ -115,12 +121,21 @@ public class WalletController {
     public Response deduct(HttpServletRequest request){
         try {
             String userId = request.getParameter("userId").toString();
-            String amt = request.getParameter("amt").toString();
+            String amtS = request.getParameter("amt").toString();
+            Object pointObj = request.getParameter("consumePoint");
+
+            BigDecimal consumePoint = BigDecimal.ZERO;
+            BigDecimal amt = new BigDecimal(amtS);
+            if(pointObj != null ){
+                if(StringUtils.isNotEmpty(pointObj.toString())){
+                    consumePoint = new BigDecimal(pointObj.toString());
+                }
+            }
             //检查用户是否存在
             Long userIdL = Long.valueOf(userId);
             memberService.hasUser(userIdL);
 
-            consumeService.add(userIdL,amt);
+            consumeService.add(userIdL,amt,consumePoint);
         }catch (Exception e){
             log.error("-----getQRCodeImage error",e);
             return Response.fail(e.getMessage());

@@ -10,9 +10,11 @@
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR" />
+    <result column="role" property="role" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, created_time, updated_time, is_delete, open_id, nick_name, phone, avatar_url
+    id, created_time, updated_time, is_delete, open_id, nick_name, phone, avatar_url, 
+    role
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -27,10 +29,10 @@
   <insert id="insert" parameterType="com.xgh.domain.entity.MemberEntity" useGeneratedKeys="true" keyProperty="id" >
     insert into t_xgh_member (created_time, updated_time, is_delete, 
       open_id, nick_name, phone, 
-      avatar_url)
+      avatar_url, role)
     values (#{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=VARCHAR}, 
       #{openId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{avatarUrl,jdbcType=VARCHAR})
+      #{avatarUrl,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xgh.domain.entity.MemberEntity" useGeneratedKeys="true" keyProperty="id" >
     insert into t_xgh_member
@@ -56,6 +58,9 @@
       <if test="avatarUrl != null" >
         avatar_url,
       </if>
+      <if test="role != null" >
+        role,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="createdTime != null" >
@@ -78,6 +83,9 @@
       </if>
       <if test="avatarUrl != null" >
         #{avatarUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        #{role,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -105,6 +113,9 @@
       <if test="avatarUrl != null" >
         avatar_url = #{avatarUrl,jdbcType=VARCHAR},
       </if>
+      <if test="role != null" >
+        role = #{role,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -116,7 +127,8 @@
       open_id = #{openId,jdbcType=VARCHAR},
       nick_name = #{nickName,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
-      avatar_url = #{avatarUrl,jdbcType=VARCHAR}
+      avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      role = #{role,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

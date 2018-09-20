@@ -19,6 +19,8 @@ public class MemberEntity {
 
     private String avatarUrl;
 
+    private String role;
+
     public Long getId() {
         return id;
     }
@@ -81,5 +83,13 @@ public class MemberEntity {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

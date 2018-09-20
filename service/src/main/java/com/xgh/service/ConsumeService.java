@@ -29,18 +29,29 @@ public class ConsumeService {
     /**
      * 添加消费记录
      */
-    public void add(Long userId,String amt) throws Exception{
+    public void add(Long userId,BigDecimal amt,BigDecimal consumePoint) throws Exception{
         WalletEntity wallet = walletEntityMapper.selectByUserId(userId);
         //检查可用额度
         if(wallet == null){
             throw new Exception("您的账户余额不足，请尽快充值！");
         }
+        if(amt.compareTo(BigDecimal.ZERO) <= 0){
+            throw new Exception("输入金额不合法！");
+        }
+        //检查可用积分
+        if(consumePoint.compareTo(BigDecimal.ZERO) < 0){
+            throw new Exception("输入积分不合法！");
+        }
+
         BigDecimal av = wallet.getAvailableAmt();
-        BigDecimal val = new BigDecimal(amt);
+        BigDecimal existPoint = wallet.getPoint();
+        BigDecimal val = amt;
         if(av.compareTo(val) < 0){
             throw new Exception("您的账户余额不足，请尽快充值！");
         }
-
+        if(existPoint.compareTo(consumePoint) < 0){
+            throw new Exception("您的积分余额不足！");
+        }
         ConsumeEntity ce = new ConsumeEntity();
         Date n = new Date();
         ce.setCreatedTime(n);
@@ -51,10 +62,12 @@ public class ConsumeService {
         ce.setSuccessTime(n);
         consumeEntityMapper.insertSelective(ce);
 
-        //扣除wallet表里用户额度
+        //扣除wallet表里用户额度,增加积分
         wallet.setUpdatedTime(n);
         BigDecimal aa = av.subtract(val);
+        BigDecimal newpoint = existPoint.add(val.divide(new BigDecimal(10),2,BigDecimal.ROUND_HALF_UP));
         wallet.setAvailableAmt(aa);
+        wallet.setPoint(newpoint.subtract(consumePoint));
         walletEntityMapper.updateByPrimaryKeySelective(wallet);
     }
 }

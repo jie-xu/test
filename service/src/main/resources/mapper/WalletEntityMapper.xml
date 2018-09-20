@@ -10,9 +10,11 @@
     <result column="total_amt" property="totalAmt" jdbcType="DECIMAL" />
     <result column="available_amt" property="availableAmt" jdbcType="DECIMAL" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="point" property="point" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, created_time, updated_time, is_delete, user_id, total_amt, available_amt, memo
+    id, created_time, updated_time, is_delete, user_id, total_amt, available_amt, memo, 
+    point
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -27,10 +29,10 @@
   <insert id="insert" parameterType="com.xgh.domain.entity.WalletEntity" useGeneratedKeys="true" keyProperty="id" >
     insert into t_xgh_wallet (created_time, updated_time, is_delete, 
       user_id, total_amt, available_amt, 
-      memo)
+      memo, point)
     values (#{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=VARCHAR}, 
       #{userId,jdbcType=BIGINT}, #{totalAmt,jdbcType=DECIMAL}, #{availableAmt,jdbcType=DECIMAL}, 
-      #{memo,jdbcType=VARCHAR})
+      #{memo,jdbcType=VARCHAR}, #{point,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.xgh.domain.entity.WalletEntity" useGeneratedKeys="true" keyProperty="id" >
     insert into t_xgh_wallet
@@ -56,6 +58,9 @@
       <if test="memo != null" >
         memo,
       </if>
+      <if test="point != null" >
+        point,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="createdTime != null" >
@@ -78,6 +83,9 @@
       </if>
       <if test="memo != null" >
         #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="point != null" >
+        #{point,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -105,6 +113,9 @@
       <if test="memo != null" >
         memo = #{memo,jdbcType=VARCHAR},
       </if>
+      <if test="point != null" >
+        point = #{point,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -116,7 +127,8 @@
       user_id = #{userId,jdbcType=BIGINT},
       total_amt = #{totalAmt,jdbcType=DECIMAL},
       available_amt = #{availableAmt,jdbcType=DECIMAL},
-      memo = #{memo,jdbcType=VARCHAR}
+      memo = #{memo,jdbcType=VARCHAR},
+      point = #{point,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

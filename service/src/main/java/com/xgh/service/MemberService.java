@@ -39,6 +39,14 @@ public class MemberService {
        }
        return true;
     }
+
+    public MemberEntity getById(Long userId){
+        return memberEntityMapper.selectByPrimaryKey(userId);
+    }
+
+    public void update(MemberEntity m){
+        memberEntityMapper.updateByPrimaryKeySelective(m);
+    }
 }
 
 

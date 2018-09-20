@@ -20,6 +20,8 @@ public class WalletEntity {
 
     private String memo;
 
+    private BigDecimal point;
+
     public Long getId() {
         return id;
     }
@@ -82,5 +84,13 @@ public class WalletEntity {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public BigDecimal getPoint() {
+        return point;
+    }
+
+    public void setPoint(BigDecimal point) {
+        this.point = point;
     }
 }
