@@ -12,10 +12,11 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="product_desc" property="productDesc" jdbcType="VARCHAR" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="point" property="point" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, created_time, updated_time, is_delete, user_id, amt, success_time, status, product_desc, 
-    memo
+    memo, point
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -30,12 +31,12 @@
   <insert id="insert" parameterType="com.xgh.domain.entity.ConsumeEntity" useGeneratedKeys="true" keyProperty="id" >
     insert into t_xgh_consume (created_time, updated_time, is_delete, 
       user_id, amt, success_time, 
-      status, product_desc, memo
-      )
+      status, product_desc, memo, 
+      point)
     values (#{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=VARCHAR}, 
       #{userId,jdbcType=BIGINT}, #{amt,jdbcType=DECIMAL}, #{successTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=INTEGER}, #{productDesc,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}
-      )
+      #{status,jdbcType=INTEGER}, #{productDesc,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, 
+      #{point,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.xgh.domain.entity.ConsumeEntity" useGeneratedKeys="true" keyProperty="id" >
     insert into t_xgh_consume
@@ -67,6 +68,9 @@
       <if test="memo != null" >
         memo,
       </if>
+      <if test="point != null" >
+        point,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="createdTime != null" >
@@ -95,6 +99,9 @@
       </if>
       <if test="memo != null" >
         #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="point != null" >
+        #{point,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -128,6 +135,9 @@
       <if test="memo != null" >
         memo = #{memo,jdbcType=VARCHAR},
       </if>
+      <if test="point != null" >
+        point = #{point,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -141,7 +151,8 @@
       success_time = #{successTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       product_desc = #{productDesc,jdbcType=VARCHAR},
-      memo = #{memo,jdbcType=VARCHAR}
+      memo = #{memo,jdbcType=VARCHAR},
+      point = #{point,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -60,6 +60,7 @@ public class ConsumeService {
         ce.setAmt(val);
         ce.setStatus(DepositStatusEnum.SUCCESS.getCode());
         ce.setSuccessTime(n);
+        ce.setPoint(consumePoint);
         consumeEntityMapper.insertSelective(ce);
 
         //扣除wallet表里用户额度,增加积分
