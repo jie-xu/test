@@ -1,12 +1,12 @@
 package com.xgh.appweb;
 
+import com.google.common.collect.Maps;
 import com.xgh.common.Response;
 import com.xgh.common.utils.QRCodeUtils;
 import com.xgh.domain.em.AmountEnum;
+import com.xgh.domain.entity.WalletEntity;
 import com.xgh.domain.vo.AmtTypeVO;
-import com.xgh.service.ConsumeService;
-import com.xgh.service.DepositService;
-import com.xgh.service.MemberService;
+import com.xgh.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +42,12 @@ public class WalletController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private WalletService walletService;
+
     /**
      * 查询充值金额枚举
      */
@@ -65,11 +71,11 @@ public class WalletController {
     public Response newdeposit(@RequestBody Map<String,Object> params){
         try {
             String userId = params.get("userId").toString();
-            List types = ((List)params.get("amtType"));
-            if(CollectionUtils.isEmpty(types) || types.size() > 1){
+            String amtType = params.get("amtType").toString();
+
+            if(StringUtils.isEmpty(amtType) || amtType.split(",").length > 1){
                 return Response.fail("请选择一项充值的额度！");
             }
-            String amtType = ((List)params.get("amtType")).get(0).toString();
             if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(amtType)){
                 return Response.fail("参数不合法！");
             }
@@ -101,12 +107,18 @@ public class WalletController {
     @ResponseBody
     public Response getQRCodeImage(@RequestBody Map<String,Object> params){
         try {
-//            String userId = params.get("userId").toString();
+            String userId = params.get("userId").toString();
 //            String content = "http://10.141.20.175:8080/xghweb/wallet/deduct?userId=" +  userId;
 //            //检查用户是否存在
 //            memberService.hasUser(Long.valueOf(userId));
 //            QRCodeUtils.createQRCode(content,"E:\\qr\\deduct_" + userId + ".png");
-        return Response.success("ok","http://10.141.20.175:8080/xghweb/WebContent/img/deduct_1.png");
+//        return imageService.getQRCodeImage(content,userId);
+            Map<String,Object> resultMap = Maps.newHashMap();
+            WalletEntity w = walletService.getPointAndAvaAmt(Long.valueOf(userId));
+            resultMap.put("qrcodeImage","http://10.141.20.175:8080/xghweb/WebContent/img/deduct_1.png");
+            resultMap.put("point",w.getPoint());
+            resultMap.put("avaAmt",w.getAvailableAmt());
+            return Response.success("ok",resultMap);
         }catch (Exception e){
             log.error("-----getQRCodeImage error",e);
             return Response.fail(e.getMessage());
